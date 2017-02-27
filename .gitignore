@@ -1,0 +1,4 @@
+.DS_Store
+
+# Ignore model checking files (for now)
+*.toolbox
