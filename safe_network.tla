@@ -25,7 +25,6 @@ ChooseN(S, n) == IF n = 0 THEN {} ELSE
 (* --------------- The model --------------------- *)
 CONSTANT numSeedNodes, maxNodes
 
-(* FIXME: could maybe get rid of prefixes and just use DOMAIN sections *)
 VARIABLE nodes, sections, nodeCount
 vars == <<nodes, sections, nodeCount>>
 
@@ -119,5 +118,5 @@ Next == \/ SplitSection
 MainInvariant == TRUE
 =============================================================================
 \* Modification History
-\* Last modified Tue Feb 28 17:23:34 AEDT 2017 by michael
+\* Last modified Tue Feb 28 17:26:45 AEDT 2017 by michael
 \* Created Mon Feb 27 13:40:49 AEDT 2017 by michael
