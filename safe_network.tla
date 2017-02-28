@@ -6,19 +6,8 @@
 *)
 EXTENDS Naturals, Sequences, FiniteSets
 
-CONSTANT numSeedNodes, maxNodes
 
-(* FIXME: could maybe get rid of prefixes and just use DOMAIN sections *)
-VARIABLE prefixes, sections, nodeCount
-
-vars == <<prefixes, sections, nodeCount>>
-
-(* Maximum length of any prefix *)
-MaxPrefixLen == 4
-
-(* Minimum section size *)
-MinSectionSize == 8
-
+(* --------- Utility functions -------------- *)
 (* Sum of a set of natural numbers *)
 (* From: https://github.com/jameshfisher/tlaplus/blob/master/examples/CarTalkPuzzle/CarTalkPuzzle.tla *)
 RECURSIVE Sum(_, _)
@@ -32,19 +21,36 @@ ChooseN(S, n) == IF n = 0 THEN {} ELSE
    LET chosen == CHOOSE x \in S : TRUE
    IN UNION {{chosen}, ChooseN(S\{chosen}, n - 1)}
 
-(* Set of all prefixes upto a finite length *)
+
+(* --------------- The model --------------------- *)
+CONSTANT numSeedNodes, maxNodes
+
+(* FIXME: could maybe get rid of prefixes and just use DOMAIN sections *)
+VARIABLE prefixes, sections, nodeCount
+vars == <<prefixes, sections, nodeCount>>
+
+(* Fixed values *)
+MaxPrefixLen == 4 \* Maximum length of any prefix
+MinSectionSize == 8 \* Minimum section size
+
+(* Type sets *)
+(* Set of all prefixes up to a finite length *)
 Prefixes == UNION {[1..n -> {0, 1}] : n \in 0..MaxPrefixLen}
 
 (* Set of natural numbers representing a set of node IDs *)
 NodeNames == SUBSET Nat
 
-(* TODO: section splitting based on XOR metric? *)
-SplitThreshold == MinSectionSize * 2 + 2
-CanSplit(section) == Cardinality(section) > SplitThreshold
-
+(* Type invariant *)
 TypeOK == /\ numSeedNodes \in Nat
           /\ prefixes \in SUBSET Prefixes
           /\ sections \in [prefixes -> NodeNames]
+
+
+(* Next-step relations *)
+
+(* TODO: section splitting based on XOR metric? *)
+SplitThreshold == MinSectionSize * 2 + 2
+CanSplit(section) == Cardinality(section) > SplitThreshold
 
 (* Step which adds a node to a section *)
 AddNode == \E p \in prefixes :
@@ -91,5 +97,5 @@ MainInvariant == /\ NetworkSizeInv
                  /\ NumSectionsInv
 =============================================================================
 \* Modification History
-\* Last modified Mon Feb 27 17:00:55 AEDT 2017 by michael
+\* Last modified Tue Feb 28 14:31:57 AEDT 2017 by michael
 \* Created Mon Feb 27 13:40:49 AEDT 2017 by michael
